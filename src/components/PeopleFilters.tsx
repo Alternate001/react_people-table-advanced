@@ -2,7 +2,7 @@ import { SearchLink } from './SearchLink';
 import { useSearchParams } from 'react-router-dom';
 
 export const PeopleFilters = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const selectedCenturies = searchParams.getAll('centuries');
 
   const getCenturyParams = (century: string) => {
@@ -13,6 +13,17 @@ export const PeopleFilters = () => {
     return {
       centuries: newCenturies.length > 0 ? newCenturies : null,
     };
+  };
+
+  const InputHandler = (value: string) => {
+    const copy = new URLSearchParams(searchParams);
+
+    copy.set('query', value);
+    if (value === '') {
+      copy.delete('query');
+    }
+
+    setSearchParams(copy);
   };
 
   return (
@@ -47,6 +58,9 @@ export const PeopleFilters = () => {
             type="search"
             className="input"
             placeholder="Search"
+            onChange={e => {
+              InputHandler(e.target.value);
+            }}
           />
 
           <span className="icon is-left">

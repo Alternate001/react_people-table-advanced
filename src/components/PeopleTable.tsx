@@ -4,19 +4,6 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { SearchLink } from './SearchLink';
 import { SearchParams } from '../utils/searchHelper';
 
-const PersonLink = ({ person }: { person: Person }) => {
-  return (
-    <td>
-      <Link
-        className={person.sex === 'f' ? 'has-text-danger' : ''}
-        to={`/people/${person.slug}`}
-      >
-        {person.name}
-      </Link>
-    </td>
-  );
-};
-
 export const PeopleTable = ({ list }: { list: Person[] }) => {
   const path = useLocation().pathname;
   const [searchParams] = useSearchParams();
@@ -83,6 +70,40 @@ export const PeopleTable = ({ list }: { list: Person[] }) => {
     return valueA - valueB;
   };
 
+  const inputFilter = (person: Person) => {
+    const item = searchParams.get('query')?.toLowerCase().trim();
+
+    if (item === undefined) {
+      return true;
+    }
+
+    return (
+      person.name.toLowerCase().includes(item) ||
+      (person.fatherName !== null &&
+        person.fatherName.toLowerCase().includes(item)) ||
+      (person.motherName !== null &&
+        person.motherName.toLowerCase().includes(item))
+    );
+  };
+
+  const PersonLink = ({ person }: { person: Person }) => {
+    return (
+      <td>
+        <Link
+          className={person.sex === 'f' ? 'has-text-danger' : ''}
+          to={{
+            pathname: `/people/${person.slug}`,
+            search: searchParams.toString()
+              ? `?${searchParams.toString()}`
+              : '',
+          }}
+        >
+          {person.name}
+        </Link>
+      </td>
+    );
+  };
+
   return (
     <div className="block">
       <div className="columns">
@@ -147,6 +168,7 @@ export const PeopleTable = ({ list }: { list: Person[] }) => {
               <tbody>
                 {list
                   .filter(person => !sex || person.sex === sex)
+                  .filter(inputFilter)
                   .filter(person => {
                     const personCentury = Math.ceil(person.born / 100);
 
@@ -175,7 +197,12 @@ export const PeopleTable = ({ list }: { list: Person[] }) => {
                             className={
                               person.sex === 'f' ? 'has-text-danger' : ''
                             }
-                            to={`/people/${person.slug}`}
+                            to={{
+                              pathname: `/people/${person.slug}`,
+                              search: searchParams.toString()
+                                ? `?${searchParams.toString()}`
+                                : '',
+                            }}
                           >
                             {person.name}
                           </Link>
