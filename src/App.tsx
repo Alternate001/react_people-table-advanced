@@ -1,5 +1,12 @@
 import './App.scss';
-import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import { PeoplePage } from './components/PeoplePage';
 
 const People = () => {
@@ -12,6 +19,7 @@ const People = () => {
 
 export const App = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   return (
     <div data-cy="app">
@@ -39,7 +47,12 @@ export const App = () => {
                   ? 'navbar-item has-background-grey-lighter'
                   : 'navbar-item'
               }
-              to={'/people'}
+              to={{
+                pathname: `/people`,
+                search: searchParams.toString()
+                  ? `?${searchParams.toString()}`
+                  : '',
+              }}
             >
               People
             </Link>

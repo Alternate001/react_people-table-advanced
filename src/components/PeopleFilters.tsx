@@ -54,6 +54,7 @@ export const PeopleFilters = () => {
       <div className="panel-block">
         <p className="control has-icons-left">
           <input
+            value={searchParams.get('query') ?? ''}
             data-cy="NameFilter"
             type="search"
             className="input"
@@ -152,7 +153,7 @@ export const PeopleFilters = () => {
       <div className="panel-block">
         <SearchLink
           className="button is-link is-outlined is-fullwidth"
-          params={{ centuries: null, sex: null }}
+          params={{ centuries: null, sex: null, query: null }}
         >
           Reset all filters
         </SearchLink>
